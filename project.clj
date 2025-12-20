@@ -60,7 +60,7 @@
                            :source-paths ^:replace ["src/clojure" "src/java"]}}
 
   :plugins [[lein-parent "0.3.9"]
-            [org.openvoxproject/i18n "0.9.2"]
+            [org.openvoxproject/i18n "0.9.3-SNAPSHOT"]
             [jonase/eastwood "1.2.2" :exclusions [org.clojure/clojure]]]
 
   :eastwood {:exclude-linters [:no-ns-form-found :reflection]
