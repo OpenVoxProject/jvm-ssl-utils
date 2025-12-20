@@ -1,18 +1,11 @@
-(defn deploy-info
-  [url]
-  { :url url
-    :username :env/clojars_jenkins_username
-    :password :env/clojars_jenkins_password
-    :sign-releases false})
-
-(defproject puppetlabs/ssl-utils "3.5.4-SNAPSHOT"
-  :url "http://www.github.com/puppetlabs/jvm-ssl-utils"
+(defproject org.openvoxproject/ssl-utils "3.5.4-SNAPSHOT"
+  :url "http://www.github.com/openvoxproject/jvm-ssl-utils"
 
   :description "SSL certificate management on the JVM."
 
   :min-lein-version "2.9.10"
 
-  :parent-project {:coords [puppetlabs/clj-parent "5.6.6"]
+  :parent-project {:coords [org.openvoxproject/clj-parent "7.4.1-SNAPSHOT"]
                    :inherit [:managed-dependencies]}
 
   ;; Abort when version ranges or version conflicts are detected in
@@ -24,7 +17,7 @@
                  [commons-codec]
                  [clj-commons/fs]
                  [clj-time]
-                 [puppetlabs/i18n]
+                 [org.openvoxproject/i18n]
                  [prismatic/schema]]
 
   :source-paths ["src/clojure"]
@@ -57,11 +50,8 @@
                                                       {:major major
                                                        :minor minor})]
                                  (condp = (java.lang.Integer/parseInt major)
-                                   1 (if (= 8 (java.lang.Integer/parseInt minor))
-                                       ["-Djava.security.properties==jdk8-fips-security"]
-                                       (throw unsupported-ex))
-                                   11 ["-Djava.security.properties==jdk11-fips-security"]
                                    17 ["-Djava.security.properties==jdk17-fips-security"]
+                                   21 ["-Djava.security.properties==jdk21-fips-security"]
                                    (throw unsupported-ex)))
                     :resource-paths ["test-resources"]}
 
@@ -70,7 +60,7 @@
                            :source-paths ^:replace ["src/clojure" "src/java"]}}
 
   :plugins [[lein-parent "0.3.9"]
-            [puppetlabs/i18n "0.9.2"]
+            [org.openvoxproject/i18n "0.9.2"]
             [jonase/eastwood "1.2.2" :exclusions [org.clojure/clojure]]]
 
   :eastwood {:exclude-linters [:no-ns-form-found :reflection]
@@ -78,9 +68,7 @@
 
   :lein-release {:scm         :git
                  :deploy-via  :lein-deploy}
-  :deploy-repositories [["releases" ~(deploy-info "https://clojars.org/repo")]
-                        ["snapshots" ~(deploy-info "https://clojars.org/repo")]]
-
-  :repositories [["puppet-releases" "https://artifactory.delivery.puppetlabs.net/artifactory/list/clojure-releases__local/"]
-                 ["puppet-snapshots" "https://artifactory.delivery.puppetlabs.net/artifactory/list/clojure-snapshots__local/"]])
-
+  :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
+                                     :username :env/CLOJARS_USERNAME
+                                     :password :env/CLOJARS_PASSWORD
+                                     :sign-releases false}]])
