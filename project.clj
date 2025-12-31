@@ -5,7 +5,7 @@
 
   :min-lein-version "2.9.10"
 
-  :parent-project {:coords [org.openvoxproject/clj-parent "7.4.1-SNAPSHOT"]
+  :parent-project {:coords [org.openvoxproject/clj-parent "7.5.0"]
                    :inherit [:managed-dependencies]}
 
   ;; Abort when version ranges or version conflicts are detected in
@@ -60,7 +60,7 @@
                            :source-paths ^:replace ["src/clojure" "src/java"]}}
 
   :plugins [[lein-parent "0.3.9"]
-            [org.openvoxproject/i18n "0.9.3-SNAPSHOT"]
+            [org.openvoxproject/i18n "0.9.3"]
             [jonase/eastwood "1.2.2" :exclusions [org.clojure/clojure]]]
 
   :eastwood {:exclude-linters [:no-ns-form-found :reflection]
@@ -68,7 +68,7 @@
 
   :lein-release {:scm         :git
                  :deploy-via  :lein-deploy}
-  :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
+  :deploy-repositories [["releases" {:url "https://clojars.org/repo"
                                      :username :env/CLOJARS_USERNAME
                                      :password :env/CLOJARS_PASSWORD
                                      :sign-releases false}]])
