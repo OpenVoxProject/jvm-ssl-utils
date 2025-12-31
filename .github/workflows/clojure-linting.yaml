@@ -16,7 +16,7 @@ jobs:
           distribution: temurin
           java-version: 21
       - name: checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
       - name: Install Clojure tools
         uses: DeLaGuardo/setup-clojure@13.4
         with:
