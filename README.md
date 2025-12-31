@@ -1,14 +1,12 @@
 # jvm-ssl-utils
 
-[![Build Status](https://travis-ci.org/puppetlabs/jvm-ssl-utils.png?branch=master)](https://travis-ci.org/puppetlabs/jvm-ssl-utils)
-
 SSL certificate management on the JVM.
 
 ## Installation
 
 Add the following dependency to your `project.clj` file:
 
-[![Clojars Project](http://clojars.org/puppetlabs/ssl-utils/latest-version.svg)](http://clojars.org/puppetlabs/ssl-utils)
+[![Clojars Project](http://clojars.org/org.openvoxproject/ssl-utils/latest-version.svg)](http://clojars.org/org.openvoxproject/ssl-utils)
 
 ## Handling X.509 certificate extensions
 
@@ -143,13 +141,4 @@ See [LICENSE](LICENSE) file.
 
 ## Support
 
-Please log issues in the GitHub issue tracker.
-
-We use semantic version numbers for our releases, and recommend that users stay
-as up-to-date as possible by upgrading to patch releases and minor releases as
-they become available.
-
-Bugfixes and ongoing development will occur in minor releases for the current
-major version. Security fixes will be backported to a previous major version on
-a best-effort basis, until the previous major version is no longer maintained.
-
+GitHub issues and PRs are welcome! Additionally, drop us a line in [the Vox Pupuli Slack](https://voxpupuli.slack.com).

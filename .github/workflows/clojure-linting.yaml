@@ -14,9 +14,19 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
       - name: checkout repo
         uses: actions/checkout@v2
+      - name: Install Clojure tools
+        uses: DeLaGuardo/setup-clojure@13.4
+        with:
+          cli: latest              # Clojure CLI based on tools.deps
+          lein: latest                  # Leiningen
+          boot: latest                  # Boot.clj
+          bb: latest                    # Babashka
+          clj-kondo: latest        # Clj-kondo
+          cljstyle: latest             # cljstyle
+          zprint: latest                # zprint
       - name: install clj-kondo (this is quite fast)
         run: |
           curl -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo
