@@ -1,4 +1,4 @@
-(defproject org.openvoxproject/ssl-utils "3.5.6-SNAPSHOT"
+(defproject org.openvoxproject/ssl-utils "3.6.0-SNAPSHOT"
   :url "http://www.github.com/openvoxproject/jvm-ssl-utils"
   :license {:name "Apache-2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0.txt"}
@@ -7,7 +7,7 @@
 
   :min-lein-version "2.9.10"
 
-  :parent-project {:coords [org.openvoxproject/clj-parent "7.5.1"]
+  :parent-project {:coords [org.openvoxproject/clj-parent "7.6.1"]
                    :inherit [:managed-dependencies]}
 
   ;; Abort when version ranges or version conflicts are detected in
@@ -39,10 +39,9 @@
              :provided {:dependencies [[org.bouncycastle/bcpkix-jdk18on]]
                         :resource-paths ["test-resources"]}
 
-             :fips {:dependencies [[org.bouncycastle/bctls-fips "2.0.19" :exclusions [org.bouncycastle/bcutil-fips]]
-                                   [org.bouncycastle/bcpkix-fips "2.0.7" :exclusions [org.bouncycastle/bcutil-fips]]
-                                   [org.bouncycastle/bcutil-fips "2.0.3"]
-                                   [org.bouncycastle/bc-fips "2.0.0"]]
+             :fips {:dependencies [[org.bouncycastle/bctls-fips]
+                                   [org.bouncycastle/bcpkix-fips]
+                                   [org.bouncycastle/bc-fips]]
                     ;; this only ensures that we run with the proper profiles
                     ;; during testing. This JVM opt will be set in the puppet module
                     ;; that sets up the JVM classpaths during installation.
@@ -62,8 +61,8 @@
                            :source-paths ^:replace ["src/clojure" "src/java"]}}
 
   :plugins [[lein-parent "0.3.9"]
-            [org.openvoxproject/i18n "0.9.4"]
-            [jonase/eastwood "1.2.2" :exclusions [org.clojure/clojure]]]
+            [org.openvoxproject/i18n "1.0.0"]
+            [jonase/eastwood "1.4.3" :exclusions [org.clojure/clojure]]]
 
   :eastwood {:exclude-linters [:no-ns-form-found :reflection]
              :continue-on-exception true}
