@@ -7,7 +7,7 @@
 
   :min-lein-version "2.9.10"
 
-  :parent-project {:coords [org.openvoxproject/clj-parent "7.6.1"]
+  :parent-project {:coords [org.openvoxproject/clj-parent "7.6.3"]
                    :inherit [:managed-dependencies]}
 
   ;; Abort when version ranges or version conflicts are detected in
@@ -61,7 +61,7 @@
                            :source-paths ^:replace ["src/clojure" "src/java"]}}
 
   :plugins [[lein-parent "0.3.9"]
-            [org.openvoxproject/i18n "1.0.0"]
+            [org.openvoxproject/i18n "1.0.2"]
             [jonase/eastwood "1.4.3" :exclusions [org.clojure/clojure]]]
 
   :eastwood {:exclude-linters [:no-ns-form-found :reflection]
