@@ -28,7 +28,7 @@
                          [org.bouncycastle/bctls-fips "1.0.19"]]
 
   :dependencies [[org.clojure/clojure]
-                 [org.clojure/tools.logging "1.2.4"]
+                 [org.clojure/tools.logging "1.3.1"]
                  [commons-codec]
                  [clj-commons/fs "1.6.312"]
                  [clj-time "0.11.0"]
