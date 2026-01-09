@@ -1,10 +1,14 @@
+---
 name: PR Testing
 
 on:
-  workflow_dispatch:
-  pull_request:
-    types: [opened, reopened, edited, synchronize]
-    paths: ['src/**','test/**','project.clj']
+  pull_request: {}
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
 
 jobs:
   pr-testing:
@@ -34,6 +38,24 @@ jobs:
           clj-kondo: latest        # Clj-kondo
           cljstyle: latest             # cljstyle
           zprint: latest                # zprint
+      - name: kondo lint
+        run: clj-kondo --lint src test
+      - name: eastwood lint
+        run: |
+          java -version
+          lein eastwood
       - name: clojure tests
         run: lein test
         timeout-minutes: 30
+
+  tests:
+    if: always()
+    needs:
+      - run-lein-tests
+    runs-on: ubuntu-24.04
+    name: Test suite
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
