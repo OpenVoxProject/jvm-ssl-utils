@@ -1,3 +1,5 @@
+(def i18n-version "1.0.2")
+
 (defproject org.openvoxproject/ssl-utils "3.6.2-SNAPSHOT"
   :url "http://www.github.com/openvoxproject/jvm-ssl-utils"
   :license {:name "Apache-2.0"
@@ -7,20 +9,31 @@
 
   :min-lein-version "2.9.10"
 
-  :parent-project {:coords [org.openvoxproject/clj-parent "7.6.3"]
-                   :inherit [:managed-dependencies]}
-
   ;; Abort when version ranges or version conflicts are detected in
   ;; dependencies. Also supports :warn to simply emit warnings.
   :pedantic? :abort
 
+  ;; These are to enforce consistent versions across dependencies of dependencies,
+  ;; and to avoid having to define versions in multiple places. If a component
+  ;; defined under :dependencies ends up causing an error due to :pedantic? :abort,
+  ;; because it is a dep of a dep with a different version, move it here.
+  :managed-dependencies [[org.clojure/clojure "1.12.4"]
+
+                         [commons-io "2.20.0"]
+                         [commons-codec "1.15"]
+
+                         [org.bouncycastle/bcpkix-jdk18on "1.83"]
+                         [org.bouncycastle/bcpkix-fips "1.0.8"]
+                         [org.bouncycastle/bc-fips "1.0.2.6"]
+                         [org.bouncycastle/bctls-fips "1.0.19"]]
+
   :dependencies [[org.clojure/clojure]
-                 [org.clojure/tools.logging]
+                 [org.clojure/tools.logging "1.2.4"]
                  [commons-codec]
-                 [clj-commons/fs]
-                 [clj-time]
-                 [org.openvoxproject/i18n]
-                 [prismatic/schema]]
+                 [clj-commons/fs "1.6.312"]
+                 [clj-time "0.11.0"]
+                 [org.openvoxproject/i18n ~i18n-version]
+                 [prismatic/schema "1.1.12"]]
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]
@@ -60,8 +73,7 @@
                            :jar-exclusions ^:replace []
                            :source-paths ^:replace ["src/clojure" "src/java"]}}
 
-  :plugins [[lein-parent "0.3.9"]
-            [org.openvoxproject/i18n "1.0.2"]
+  :plugins [[org.openvoxproject/i18n ~i18n-version]
             [jonase/eastwood "1.4.3" :exclusions [org.clojure/clojure]]]
 
   :eastwood {:exclude-linters [:no-ns-form-found :reflection]
