@@ -20,7 +20,7 @@
   :managed-dependencies [[org.clojure/clojure "1.12.4"]
 
                          [commons-io "2.21.0"]
-                         [commons-codec "1.15"]
+                         [commons-codec "1.20.0"]
 
                          [org.bouncycastle/bcpkix-jdk18on "1.83"]
                          [org.bouncycastle/bcpkix-fips "1.0.8"]
