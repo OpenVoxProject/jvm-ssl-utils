@@ -33,7 +33,7 @@
                  [clj-commons/fs "1.6.312"]
                  [clj-time "0.11.0"]
                  [org.openvoxproject/i18n ~i18n-version]
-                 [prismatic/schema "1.1.12"]]
+                 [prismatic/schema "1.4.1"]]
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]
