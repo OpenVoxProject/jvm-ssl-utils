@@ -1,6 +1,6 @@
 (def i18n-version "1.0.3")
 
-(defproject org.openvoxproject/ssl-utils "3.6.2"
+(defproject org.openvoxproject/ssl-utils "3.6.3-SNAPSHOT"
   :url "http://www.github.com/openvoxproject/jvm-ssl-utils"
   :license {:name "Apache-2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0.txt"}
