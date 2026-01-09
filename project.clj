@@ -31,7 +31,7 @@
                  [org.clojure/tools.logging "1.3.1"]
                  [commons-codec]
                  [clj-commons/fs "1.6.312"]
-                 [clj-time "0.11.0"]
+                 [clj-time "0.15.2"]
                  [org.openvoxproject/i18n ~i18n-version]
                  [prismatic/schema "1.4.1"]]
 
