@@ -51,7 +51,7 @@ jobs:
   tests:
     if: always()
     needs:
-      - run-lein-tests
+      - pr-testing
     runs-on: ubuntu-24.04
     name: Test suite
     steps:
