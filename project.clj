@@ -19,7 +19,7 @@
   ;; because it is a dep of a dep with a different version, move it here.
   :managed-dependencies [[org.clojure/clojure "1.12.4"]
 
-                         [commons-io "2.20.0"]
+                         [commons-io "2.21.0"]
                          [commons-codec "1.15"]
 
                          [org.bouncycastle/bcpkix-jdk18on "1.83"]
