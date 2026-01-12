@@ -13,27 +13,30 @@
   ;; dependencies. Also supports :warn to simply emit warnings.
   :pedantic? :abort
 
-  ;; These are to enforce consistent versions across dependencies of dependencies,
-  ;; and to avoid having to define versions in multiple places. If a component
-  ;; defined under :dependencies ends up causing an error due to :pedantic? :abort,
-  ;; because it is a dep of a dep with a different version, move it here.
+  ;; Generally, try to keep version pins in :managed-dependencies and the libraries
+  ;; this project actually uses in :dependencies, inheriting the version from
+  ;; :managed-dependencies. This prevents endless version conflicts due to deps of deps.
+  ;; Renovate should keep the versions largely in sync between projects.
   :managed-dependencies [[org.clojure/clojure "1.12.4"]
-
-                         [commons-io "2.21.0"]
+                         [org.clojure/tools.logging "1.3.1"]
+                         [clj-commons/fs "1.6.312"]
+                         [clj-time "0.15.2"]
                          [commons-codec "1.20.0"]
-
+                         [commons-io "2.21.0"]
                          [org.bouncycastle/bcpkix-jdk18on "1.83"]
                          [org.bouncycastle/bcpkix-fips "1.0.8"]
                          [org.bouncycastle/bc-fips "1.0.2.6"]
-                         [org.bouncycastle/bctls-fips "1.0.19"]]
+                         [org.bouncycastle/bctls-fips "1.0.19"]
+                         [org.openvoxproject/i18n ~i18n-version]
+                         [prismatic/schema "1.4.1"]]
 
   :dependencies [[org.clojure/clojure]
-                 [org.clojure/tools.logging "1.3.1"]
+                 [org.clojure/tools.logging]
+                 [clj-commons/fs]
+                 [clj-time]
                  [commons-codec]
-                 [clj-commons/fs "1.6.312"]
-                 [clj-time "0.15.2"]
-                 [org.openvoxproject/i18n ~i18n-version]
-                 [prismatic/schema "1.4.1"]]
+                 [org.openvoxproject/i18n]
+                 [prismatic/schema]]
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]
