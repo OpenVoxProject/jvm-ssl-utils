@@ -828,7 +828,7 @@ public class ExtensionsUtils {
         else {
             if (serialNumber == null) {
                 throw new IllegalArgumentException(
-                        "'serial_number' not provided for auth key identifier" +
+                        "'serial_number' not provided for auth key identifier " +
                         "but was expected since 'issuer' was provided");
             }
             return true;
