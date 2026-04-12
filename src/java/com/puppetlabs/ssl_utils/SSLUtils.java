@@ -283,12 +283,6 @@ public class SSLUtils {
             }
         }
 
-        AlgorithmIdentifier sigAlgId =
-                new DefaultSignatureAlgorithmIdentifierFinder().find("SHA256withRSA");
-
-        AlgorithmIdentifier digAlgId =
-                new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
-
         JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256withRSA");
 
         ContentSigner signer = builder.build(issuerPrivateKey);
