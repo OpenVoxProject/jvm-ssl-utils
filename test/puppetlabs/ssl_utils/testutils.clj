@@ -240,7 +240,7 @@
                             (get-private-key root-key-pair)
                             (get-public-key root-key-pair)
                             (get-serial cert-to-revoke))]
-    [certs (-> crls drop-last (conj updated-crl) leaf-keys)]))
+    [certs (-> crls drop-last (conj updated-crl)) leaf-keys]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Writing test files
