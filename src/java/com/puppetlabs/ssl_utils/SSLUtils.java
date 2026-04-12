@@ -1,8 +1,5 @@
 package com.puppetlabs.ssl_utils;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.codec.binary.Hex;
-
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -86,6 +83,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -1517,8 +1515,12 @@ public class SSLUtils {
     }
 
     private static String getFingerprint(byte[] bytes, String digestAlgorithm) {
-        MessageDigest digest = DigestUtils.getDigest(digestAlgorithm);
-        return Hex.encodeHexString(digest.digest(bytes));
+        try {
+            MessageDigest digest = MessageDigest.getInstance(digestAlgorithm);
+            return HexFormat.of().formatHex(digest.digest(bytes));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalArgumentException("Invalid digest algorithm: " + digestAlgorithm, e);
+        }
     }
 
     /***
