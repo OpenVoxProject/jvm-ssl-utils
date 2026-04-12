@@ -14,8 +14,7 @@
            (javax.net.ssl SSLContext)
            (javax.security.auth.x500 X500Principal)
            (org.bouncycastle.asn1 ASN1Primitive DERUTF8String)
-           (org.bouncycastle.asn1.pkcs Attribute)
-           (org.joda.time DateTimeUtils)))
+           (org.bouncycastle.asn1.pkcs Attribute)))
 
 (def key-id-type-2-byte-length 8)
 
@@ -556,12 +555,9 @@
         (is (= 0 (get-crl-number crl)))
         (is (false? (revoked? crl cert)))
 
-        ;; We need to advance the value of DateTime.now() so it's not the
-        ;; same value that was used when generating the CRL, otherwise it
-        ;; will look like revoke didn't properly advance the dates.
-        ;; This is a consequence of the test generating the CRL and revoking
-        ;; a certificate before the value of DateTime.now() has changed.
-        (DateTimeUtils/setCurrentMillisOffset 9999)
+        ;; We need to advance the wall clock so the revoked CRL's thisUpdate
+        ;; is strictly after the original CRL's thisUpdate.
+        (Thread/sleep 10)
         (let [updated-crl (revoke crl private-key public-key (get-serial cert))]
           (testing "certificate is revoked"
             (is (true? (revoked? updated-crl cert))))

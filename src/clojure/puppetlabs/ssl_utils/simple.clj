@@ -1,9 +1,10 @@
 (ns puppetlabs.ssl-utils.simple
   (:import (java.util Date)
+           (java.time Instant)
+           (java.time.temporal ChronoUnit)
            (java.security PublicKey PrivateKey)
            (java.security.cert X509Certificate X509CRL))
   (:require [puppetlabs.ssl-utils.core :as ssl-utils]
-            [clj-time.core :as time]
             [schema.core :as schema]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -70,11 +71,11 @@
    and the dates will be based on the current time. Returns a map in the
    form {:not-before Date :not-after Date}."
   [ca-ttl :- schema/Int]
-  (let [now        (time/now)
-        not-before (time/minus now (time/days 1))
-        not-after  (time/plus now (time/seconds ca-ttl))]
-    {:not-before (.toDate not-before)
-     :not-after  (.toDate not-after)}))
+  (let [now        (Instant/now)
+        not-before (Date/from (.minus now 1 ChronoUnit/DAYS))
+        not-after  (Date/from (.plusSeconds now ca-ttl))]
+    {:not-before not-before
+     :not-after  not-after}))
 
 (def default-keylength
   "The default bit length to use when generating keys.

@@ -5,7 +5,9 @@
            (javax.security.auth.x500 X500Principal)
            (org.bouncycastle.asn1.x500 X500Name)
            (org.bouncycastle.pkcs PKCS10CertificationRequest)
-           (org.joda.time DateTime Period)
+           (java.time Instant)
+           (java.time.temporal ChronoUnit)
+           (java.util Date)
            (org.bouncycastle.asn1.x509 SubjectPublicKeyInfo)
            (com.puppetlabs.ssl_utils SSLUtils))
   (:require [clojure.test :refer :all]
@@ -77,17 +79,13 @@
   (issued-by? x (str x500-name)))
 
 (defn generate-past-date []
-  (-> (DateTime/now)
-      (.minus (Period/days 1))
-      (.toDate)))
+  (Date/from (.minus (Instant/now) 1 ChronoUnit/DAYS)))
 
 (defn generate-not-before-date []
   (generate-past-date))
 
 (defn generate-future-date []
-  (-> (DateTime/now)
-      (.plus (Period/years 5))
-      (.toDate)))
+  (Date/from (.plus (Instant/now) (* 5 365) ChronoUnit/DAYS)))
 
 (defn generate-not-after-date []
   (generate-future-date))
@@ -100,7 +98,7 @@
 (defn generate-expired-crl
   [issuer issuer-private-key issuer-public-key]
   (SSLUtils/generateCRL issuer issuer-private-key issuer-public-key
-                        (.toDate (DateTime/now))
+                        (Date/from (Instant/now))
                         (generate-past-date)
                         BigInteger/ZERO
                         nil))
@@ -116,7 +114,7 @@
 (defn generate-newer-crl
   [issuer issuer-private-key issuer-public-key]
   (SSLUtils/generateCRL issuer issuer-private-key issuer-public-key
-                        (.toDate (DateTime/now))
+                        (Date/from (Instant/now))
                         (generate-future-date)
                         BigInteger/ONE
                         nil))
@@ -124,7 +122,7 @@
 (defn generate-newest-crl
   [issuer issuer-private-key issuer-public-key]
   (SSLUtils/generateCRL issuer issuer-private-key issuer-public-key
-                        (.toDate (DateTime/now))
+                        (Date/from (Instant/now))
                         (generate-future-date)
                         BigInteger/TEN
                         nil))
@@ -134,7 +132,7 @@
 (defn generate-delta-crl
   [issuer issuer-private-key issuer-public-key]
   (SSLUtils/generateCRL issuer issuer-private-key issuer-public-key
-                        (.toDate (DateTime/now))
+                        (Date/from (Instant/now))
                         (generate-future-date)
                         BigInteger/ONE
                         [(javaize (delta-crl-indicator BigInteger/ZERO))]))

@@ -37,7 +37,8 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.PKCSException;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
-import org.joda.time.DateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import javax.net.ssl.CertPathTrustManagerParameters;
 import javax.security.auth.x500.X500Principal;
@@ -356,9 +357,9 @@ public class SSLUtils {
                                       PublicKey issuerPublicKey)
         throws CRLException, IOException, OperatorCreationException, NoSuchAlgorithmException, CertificateEncodingException
     {
-        DateTime now = DateTime.now();
-        Date thisUpdate = now.toDate();
-        Date nextUpdate = now.plusSeconds(crlLifetimeSeconds).toDate();
+        Instant now = Instant.now();
+        Date thisUpdate = Date.from(now);
+        Date nextUpdate = Date.from(now.plusSeconds(crlLifetimeSeconds));
         return generateCRL(issuer, issuerPrivateKey, issuerPublicKey,
                            thisUpdate, nextUpdate, BigInteger.ZERO, null);
     }
@@ -386,9 +387,9 @@ public class SSLUtils {
             throws CRLException {
         // The CRL is not valid if the time of checking == the time of last_update.
         // So to have it valid right now we need to say that it was updated one second ago.
-        DateTime now = DateTime.now();
-        Date thisUpdate = now.minusSeconds(1).toDate();
-        Date nextUpdate = now.plusYears(5).toDate();
+        Instant now = Instant.now();
+        Date thisUpdate = Date.from(now.minusSeconds(1));
+        Date nextUpdate = Date.from(now.plus(5 * 365, ChronoUnit.DAYS));
         X509v2CRLBuilder builder =
                 new JcaX509v2CRLBuilder(crl.getIssuerX500Principal(), thisUpdate);
         builder.setNextUpdate(nextUpdate);
@@ -457,7 +458,7 @@ public class SSLUtils {
             throws CRLException, IOException, NoSuchAlgorithmException, OperatorCreationException {
         X509v2CRLBuilder builder = crlBuilder(crl);
         // TODO PE-5678 Use java.security.cert.CRLReason.KEY_COMPROMISE.ordinal() instead of 1
-        builder.addCRLEntry(serial, DateTime.now().toDate(), 1);
+        builder.addCRLEntry(serial, Date.from(Instant.now()), 1);
         return buildCRL(crl, issuerPrivateKey, issuerPublicKey, builder);
     }
 
@@ -495,7 +496,7 @@ public class SSLUtils {
         X509v2CRLBuilder builder = crlBuilder(crl);
         // TODO PE-5678 Use java.security.cert.CRLReason.KEY_COMPROMISE.ordinal() instead of 1
         for (BigInteger serial : serials) {
-            builder.addCRLEntry(serial, DateTime.now().toDate(), 1);
+            builder.addCRLEntry(serial, Date.from(Instant.now()), 1);
         }
         return buildCRL(crl, issuerPrivateKey, issuerPublicKey, builder);
     }
