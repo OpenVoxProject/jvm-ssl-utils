@@ -11,8 +11,7 @@
            (org.bouncycastle.asn1.x509 SubjectPublicKeyInfo)
            (com.puppetlabs.ssl_utils SSLUtils))
   (:require [clojure.test :refer :all]
-            [clojure.java.io :refer [resource]]
-            [me.raynes.fs :as fs]
+            [clojure.java.io :as io :refer [resource]]
             [puppetlabs.ssl-utils.core :refer :all]))
 
 (defn pubkey-sha1
@@ -258,10 +257,10 @@
 
 (defn write-certs-and-crls
   [certs crls test-subpath certs-filename crls-filename]
-  (let [dir-path (fs/file test-files-path test-subpath)
-        certs-path (fs/file dir-path certs-filename)
-        crls-path (fs/file dir-path crls-filename)]
-    (fs/mkdirs dir-path)
+  (let [dir-path (io/file test-files-path test-subpath)
+        certs-path (io/file dir-path certs-filename)
+        crls-path (io/file dir-path crls-filename)]
+    (.mkdirs dir-path)
     (objs->pem! certs certs-path)
     (objs->pem! crls crls-path)))
 
@@ -308,14 +307,14 @@
         original-crls (map :original crls-with-updates)
         new-crls (map :new crls-with-updates)
         newest-crls (map :newest crls-with-updates)]
-    (fs/mkdirs output-dir)
+    (.mkdirs (io/file output-dir))
     ;; The file names `ca-bundle.pem`, `crls.pem`, and `puppet_ca_key.pem` are used
     ;; in the instructions for setting up an intermediate CA with an external root
     ;; (https://puppet.com/docs/puppet/latest/server/intermediate_ca.html#set-up-puppet-as-an-intermediate-ca-with-an-external-root),
     ;; which should allow for easily copy-pasting the example `import` command.
-    (objs->pem! certs (fs/file output-dir "ca-bundle.pem"))
-    (objs->pem! original-crls (fs/file output-dir "crls.pem"))
-    (objs->pem! new-crls (fs/file output-dir "new-crls.pem"))
-    (objs->pem! newest-crls (fs/file output-dir "newest-crls.pem"))
-    (key->pem! (get-private-key leaf-keys) (fs/file output-dir "puppet_ca_key.pem"))
-    (key->pem! (get-public-key leaf-keys) (fs/file output-dir "puppet_ca_pubkey.pem"))))
+    (objs->pem! certs (io/file output-dir "ca-bundle.pem"))
+    (objs->pem! original-crls (io/file output-dir "crls.pem"))
+    (objs->pem! new-crls (io/file output-dir "new-crls.pem"))
+    (objs->pem! newest-crls (io/file output-dir "newest-crls.pem"))
+    (key->pem! (get-private-key leaf-keys) (io/file output-dir "puppet_ca_key.pem"))
+    (key->pem! (get-public-key leaf-keys) (io/file output-dir "puppet_ca_pubkey.pem"))))
