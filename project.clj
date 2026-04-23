@@ -19,7 +19,7 @@
   ;; Renovate should keep the versions largely in sync between projects.
   :managed-dependencies [[org.clojure/clojure "1.12.4"]
                          [org.clojure/tools.logging "1.3.1"]
-                         [commons-io "2.21.0"]
+                         [commons-io "2.22.0"]
                          [org.bouncycastle/bcpkix-jdk18on "1.84"]
                          [org.bouncycastle/bcpkix-fips "1.0.8"]
                          [org.bouncycastle/bc-fips "1.0.2.6"]
