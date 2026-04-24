@@ -63,6 +63,7 @@
                                  (condp = (java.lang.Integer/parseInt major)
                                    17 ["-Djava.security.properties==jdk17-fips-security"]
                                    21 ["-Djava.security.properties==jdk21-fips-security"]
+                                   25 ["-Djava.security.properties==jdk25-fips-security"]
                                    (throw unsupported-ex)))
                     :resource-paths ["test-resources"]}
 
