@@ -14,6 +14,16 @@
             [clojure.java.io :as io :refer [resource]]
             [puppetlabs.ssl-utils.core :refer :all]))
 
+(def long-puppet-cn
+  "For decades, the Puppet agent has set the CN= field of requested Certificates
+  to the FQDN of the node the agent runs on. DNS allows this to be up to 253
+  characters, which is more than the 64 characters that RFC 5280 allows for a
+  CN.
+
+  Thus, for backwards compatbility with existing agent populations, we have to
+  test that we can break with the spec."
+  "puppet-cns.are-usually-fqdns.which-can-be-longer-than-rfc5280-allows.test")
+
 (defn pubkey-sha1
   "Gets the SHA-1 digest of the raw bytes of the provided publickey."
   [pub-key]

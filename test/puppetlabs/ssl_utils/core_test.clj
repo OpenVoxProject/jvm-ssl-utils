@@ -128,6 +128,65 @@
                                         (get-public-key key-pair))]
       (is (= subject (get-subject-from-x509-certificate certificate))))))
 
+(deftest long-puppet-common-name-test
+  (let [long-dn (str "CN=" long-puppet-cn)]
+    (testing "valid-x500-name? accepts a CN longer than 64 characters"
+      (is (valid-x500-name? long-dn)))
+
+    (testing "create X500 RDN from a long common name"
+      (is (= long-dn (cn long-puppet-cn))))
+
+    (testing "create X500 DN containing a long common name"
+      (is (= (str long-dn ",O=org") (dn [:cn long-puppet-cn :o "org"]))))
+
+    (testing "long cn extracted from an X500 name"
+      (is (= long-puppet-cn (x500-name->CN long-dn))))
+
+    (testing "long cn extracted from an X500Principal"
+      (is (= long-puppet-cn (get-cn-from-x500-principal (X500Principal. long-dn)))))
+
+    ;; The constructor call in each block below sits inside its own `is` so
+    ;; that when it throws, the block reports a single error and the remaining
+    ;; blocks still run, instead of the exception aborting the whole deftest.
+    (testing "create CSR with a long CN in the subject"
+      (let [csr (is (generate-certificate-request (generate-key-pair 512) long-dn))]
+        (when csr
+          (is (certificate-request? csr))
+          (is (has-subject? csr long-dn)))))
+
+    (testing "sign certificate with a long CN in the subject and issuer"
+      (let [key-pair (generate-key-pair 512)
+            certificate (is (sign-certificate long-dn
+                                              (get-private-key key-pair)
+                                              42
+                                              (generate-not-before-date)
+                                              (generate-not-after-date)
+                                              long-dn
+                                              (get-public-key key-pair)))]
+        (when certificate
+          (is (certificate? certificate))
+          (is (has-subject? certificate long-dn))
+          (is (issued-by? certificate long-dn))
+          (is (= long-puppet-cn (get-cn-from-x509-certificate certificate)))
+          (is (= long-dn (get-subject-from-x509-certificate certificate))))))
+
+    (testing "sign certificate with a long CN in the issuer DN of its authority key identifier"
+      (let [key-pair (generate-key-pair 512)
+            extensions [(authority-key-identifier-options long-dn 42 false)]
+            certificate (is (sign-certificate (cn "my ca")
+                                              (get-private-key key-pair)
+                                              42
+                                              (generate-not-before-date)
+                                              (generate-not-after-date)
+                                              (cn "foo")
+                                              (get-public-key key-pair)
+                                              extensions))]
+        (when certificate
+          (is (certificate? certificate))
+          (is (= [long-dn]
+                 (get-in (get-extension-value certificate authority-key-identifier-oid)
+                         [:issuer :directory-name]))))))))
+
 (deftest certification-request-test
   (testing "create CSR"
     (let [subject (cn "subject")
