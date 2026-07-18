@@ -16,7 +16,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        fips: ['fips-disabled']
         version: ['17', '21', '25']
+        # Add additional coverage for FIPS. Only Java 17 is tested as
+        # that is the only JVM version that bc-fips 1.x is certified for.
+        include:
+          - fips: 'fips-enabled'
+            version: '17'
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo
@@ -45,7 +51,9 @@ jobs:
           java -version
           lein eastwood
       - name: clojure tests
-        run: lein test
+        env:
+          LEIN_PROFILE: ${{ case(matrix.fips == 'fips-enabled', 'fips', 'dev') }}
+        run: lein with-profile $LEIN_PROFILE test
         timeout-minutes: 30
 
   tests:
