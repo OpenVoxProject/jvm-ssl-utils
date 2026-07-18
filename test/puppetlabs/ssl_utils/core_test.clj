@@ -468,8 +468,11 @@
               1 not-before not-after
               issuer-name public-key
               (create-ca-extensions issuer-name 1 public-key))
+        [crl-this-update crl-next-update] (generate-past-crl-dates)
         crl (generate-crl (X500Principal. issuer-name)
-                          private-key public-key)]
+                          private-key public-key
+                          crl-this-update crl-next-update
+                          BigInteger/ZERO [])]
 
     (testing "create CRL"
       (is (= key-id-type-1-byte-length (-> (get-extension-value crl authority-key-identifier-oid)
@@ -555,9 +558,6 @@
         (is (= 0 (get-crl-number crl)))
         (is (false? (revoked? crl cert)))
 
-        ;; We need to advance the wall clock so the revoked CRL's thisUpdate
-        ;; is strictly after the original CRL's thisUpdate.
-        (Thread/sleep 10)
         (let [updated-crl (revoke crl private-key public-key (get-serial cert))]
           (testing "certificate is revoked"
             (is (true? (revoked? updated-crl cert))))
