@@ -164,7 +164,7 @@ public class SSLUtils {
      * @return The common name from the X500Name.  Empty string if none available.
      */
     public static String getCommonNameFromX500Name(String x500Name) {
-        RDN[] rdns = new X500Name(BCStyle.INSTANCE, x500Name).getRDNs(BCStyle.CN);
+        RDN[] rdns = new X500Name(PuppetCNStyle.INSTANCE, x500Name).getRDNs(BCStyle.CN);
         String commonName = "";
         if (rdns.length > 0) {
             AttributeTypeAndValue attributeInfo = rdns[0].getFirst();
@@ -196,7 +196,7 @@ public class SSLUtils {
         // TODO: the puppet code sets a property "version=0" on the request object
         // here; can't figure out how to do that at the moment.  Not sure if it's needed.
         PKCS10CertificationRequestBuilder requestBuilder =
-                new JcaPKCS10CertificationRequestBuilder(new X500Name(BCStyle.INSTANCE, subjectDN), keyPair.getPublic());
+                new JcaPKCS10CertificationRequestBuilder(new X500Name(PuppetCNStyle.INSTANCE, subjectDN), keyPair.getPublic());
 
         if ((extensions != null) && (extensions.size() > 0)) {
             Extensions parsedExts = ExtensionsUtils.getExtensionsObjFromMap(extensions);
@@ -264,11 +264,11 @@ public class SSLUtils {
             throws IOException, OperatorCreationException, CertificateException
     {
         X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(
-                new X500Name(BCStyle.INSTANCE, issuerDn),
+                new X500Name(PuppetCNStyle.INSTANCE, issuerDn),
                 serialNumber,
                 notBefore,
                 notAfter,
-                new X500Name(BCStyle.INSTANCE, subjectDn),
+                new X500Name(PuppetCNStyle.INSTANCE, subjectDn),
                 SubjectPublicKeyInfo.getInstance(subjectPublicKey.getEncoded()));
 
         Extensions bcExtensions = ExtensionsUtils.getExtensionsObjFromMap(extensions);
@@ -1349,7 +1349,7 @@ public class SSLUtils {
     public static String getSubjectFromX509Certificate(X509Certificate certificate) {
         byte[] encodedName = certificate.getSubjectX500Principal().getEncoded();
         X500Name x500Name = X500Name.getInstance(encodedName);
-        return BCStyle.INSTANCE.toString(x500Name);
+        return PuppetCNStyle.INSTANCE.toString(x500Name);
     }
 
     /**
@@ -1411,14 +1411,14 @@ public class SSLUtils {
                     "The RDN pairs list must contain an even number of elements.");
         }
 
-        X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
+        X500NameBuilder builder = new X500NameBuilder(PuppetCNStyle.INSTANCE);
 
         for (int i=0; i < rdnPairs.size(); i++) {
             String attr = rdnPairs.get(i);
             i++;
             String val = rdnPairs.get(i);
 
-            builder.addRDN(BCStyle.INSTANCE.attrNameToOID(attr), val);
+            builder.addRDN(PuppetCNStyle.INSTANCE.attrNameToOID(attr), val);
         }
 
         return builder.build().toString();
@@ -1431,7 +1431,7 @@ public class SSLUtils {
      * @return The RDN form of the common name.
      */
     public static String x500NameCn(String commonName) {
-        return new X500NameBuilder(BCStyle.INSTANCE).addRDN(BCStyle.CN, commonName).build().toString();
+        return new X500NameBuilder(PuppetCNStyle.INSTANCE).addRDN(BCStyle.CN, commonName).build().toString();
     }
 
     /**
