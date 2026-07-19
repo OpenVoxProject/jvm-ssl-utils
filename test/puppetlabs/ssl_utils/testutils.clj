@@ -86,6 +86,17 @@
 (defn generate-future-date []
   (Date/from (.plus (Instant/now) (* 5 365) ChronoUnit/DAYS)))
 
+(defn generate-past-crl-dates
+  "Returns a [thisUpdate nextUpdate] pair anchored one day in the past, for
+  generating a CRL whose dates are guaranteed to be strictly earlier than
+  those of any CRL revised 'now' (e.g. by revoke). CRL dates have one-second
+  ASN.1 resolution and revoke backdates thisUpdate by a second, so a CRL
+  generated with 'now' dates can tie or beat its own revision."
+  []
+  (let [this-update (.minus (Instant/now) 1 ChronoUnit/DAYS)]
+    [(Date/from this-update)
+     (Date/from (.plus this-update (* 5 365) ChronoUnit/DAYS))]))
+
 (defn generate-not-after-date []
   (generate-future-date))
 
