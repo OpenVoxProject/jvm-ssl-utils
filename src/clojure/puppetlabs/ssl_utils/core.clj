@@ -6,9 +6,8 @@
            (org.bouncycastle.asn1.x500 X500Name)
            (org.bouncycastle.pkcs PKCS10CertificationRequest)
            (com.puppetlabs.ssl_utils ExtensionsUtils$AttributeDescriptor SSLUtils
-                                     ExtensionsUtils)
+                                     ExtensionsUtils PuppetCNStyle)
            (java.util Map List Date Set)
-           (org.bouncycastle.asn1.x500.style BCStyle)
            (org.bouncycastle.openssl.jcajce JcaPEMWriter)
            (java.io InputStream File Reader BufferedReader Writer OutputStream BufferedWriter)
            (java.net URI URL Socket))
@@ -28,7 +27,7 @@
   ;; TODO: Maybe using a string parsing algo is faster?
   [x]
   (try
-    (X500Name. BCStyle/INSTANCE x)
+    (X500Name. PuppetCNStyle/INSTANCE x)
     (not (nil? x))
     (catch Exception _
       false)))

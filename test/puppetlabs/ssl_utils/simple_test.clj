@@ -1,7 +1,8 @@
 (ns puppetlabs.ssl-utils.simple-test
   (:require [clojure.test :refer :all]
             [puppetlabs.ssl-utils.simple :as simple]
-            [puppetlabs.ssl-utils.core :as ssl-utils])
+            [puppetlabs.ssl-utils.core :as ssl-utils]
+            [puppetlabs.ssl-utils.testutils :as testutils])
   (:import (java.io ByteArrayOutputStream ByteArrayInputStream)))
 
 (defn roundtrip-pem
@@ -26,6 +27,26 @@
       (is (= "foo.localdomain" (ssl-utils/get-cn-from-x509-certificate read-cert)))
       (is (= "ca" (ssl-utils/get-cn-from-x500-principal (.getIssuerX500Principal read-cert))))
       (is (= "ca" (ssl-utils/get-cn-from-x500-principal (.getIssuerX500Principal read-crl)))))))
+
+(deftest long-puppet-common-name-test
+  (testing "certnames longer than the RFC 5280 CN bound of 64 characters work through the simple API"
+    ;; Each generation step sits inside its own `is` so that when it throws,
+    ;; it reports a single error and the remaining steps still run, instead
+    ;; of the exception aborting the whole deftest.
+    (let [long-certname testutils/long-puppet-cn
+          ca-cert (is (simple/gen-self-signed-cert long-certname 1 {:keylength 512} true))
+          cert (when ca-cert
+                 (is (simple/gen-cert long-certname ca-cert 2 {:keylength 512})))
+          crl (when ca-cert
+                (is (simple/gen-crl ca-cert)))]
+      (when ca-cert
+        (is (simple/ssl-cert? ca-cert))
+        (is (= long-certname (ssl-utils/get-cn-from-x509-certificate (:cert ca-cert)))))
+      (when cert
+        (is (simple/ssl-cert? cert))
+        (is (= long-certname (ssl-utils/get-cn-from-x509-certificate (:cert cert)))))
+      (when crl
+        (is (ssl-utils/certificate-revocation-list? crl))))))
 
 (deftest optional-parameters-test
   (testing "Can specify keylength when generating a certificate"

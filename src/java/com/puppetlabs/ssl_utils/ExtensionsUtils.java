@@ -841,7 +841,7 @@ public class ExtensionsUtils {
                                                               BigInteger serialNumber)
         throws OperatorCreationException {
         GeneralNames issuerAsGeneralNames =
-            new GeneralNames(new GeneralName(new X500Name(issuer)));
+            new GeneralNames(new GeneralName(new X500Name(PuppetCNStyle.INSTANCE, issuer)));
         if (authorityKeyId != null) {
             return new AuthorityKeyIdentifier(authorityKeyId.getKeyIdentifier(),
                                                         issuerAsGeneralNames,
