@@ -25,7 +25,7 @@
                          [org.bouncycastle/bc-fips "1.0.2.6"]
                          [org.bouncycastle/bctls-fips "1.0.19"]
                          [org.openvoxproject/i18n ~i18n-version]
-                         [prismatic/schema "1.4.1"]]
+                         [prismatic/schema "1.4.2"]]
 
   :dependencies [[org.clojure/clojure]
                  [org.clojure/tools.logging]
