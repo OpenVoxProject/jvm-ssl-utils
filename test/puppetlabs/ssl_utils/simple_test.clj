@@ -34,11 +34,15 @@
     ;; it reports a single error and the remaining steps still run, instead
     ;; of the exception aborting the whole deftest.
     (let [long-certname testutils/long-puppet-cn
-          ca-cert (is (simple/gen-self-signed-cert long-certname 1 {:keylength 512} true))
-          cert (when ca-cert
+          ca-cert (is #_{:clj-kondo/ignore [:constant-condition]}
+                      (simple/gen-self-signed-cert long-certname 1 {:keylength 512} true))
+          cert #_{:clj-kondo/ignore [:constant-condition]}
+               (when ca-cert
                  (is (simple/gen-cert long-certname ca-cert 2 {:keylength 512})))
-          crl (when ca-cert
+          crl #_{:clj-kondo/ignore [:constant-condition]}
+              (when ca-cert
                 (is (simple/gen-crl ca-cert)))]
+      #_{:clj-kondo/ignore [:constant-condition]}
       (when ca-cert
         (is (simple/ssl-cert? ca-cert))
         (is (= long-certname (ssl-utils/get-cn-from-x509-certificate (:cert ca-cert)))))
