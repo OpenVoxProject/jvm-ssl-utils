@@ -7,7 +7,7 @@
 
   :description "SSL certificate management on the JVM."
 
-  :min-lein-version "2.9.10"
+  :min-lein-version "2.12.0"
 
   ;; Abort when version ranges or version conflicts are detected in
   ;; dependencies. Also supports :warn to simply emit warnings.
