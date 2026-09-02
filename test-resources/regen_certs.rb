@@ -262,7 +262,7 @@ def regen_crl_tests_pki
   File.open("#{dest_dir}/not-yet-valid-crl.pem", 'w') do |f|
     f.puts(pki.create_crl(cert: pki.root_cert,
                           key: pki.root_key,
-                          last_update: Time.now + 86_400))
+                          last_update: Time.now + pki.settings[:ca_ttl]))
   end
   File.open("#{dest_dir}/cert-chain-with-revoked-cert.pem", 'w') do |f|
     f.puts(ica2_cert, pki.ca_cert, pki.root_cert)
