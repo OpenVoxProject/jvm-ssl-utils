@@ -1,3 +1,4 @@
+require "fileutils"
 require 'openssl'
 require 'ostruct'
 require 'tmpdir'
@@ -196,6 +197,10 @@ module PuppetserverSpec
       def valid_until
         Time.now + @settings[:ca_ttl]
       end
+
+      def cleanup
+        FileUtils.rm_rf @settings[:confdir]
+      end
     end
   end
 end
@@ -274,7 +279,9 @@ def regen_crl_tests_pki
   File.open("#{dest_dir}/other-3-cert-chain.pem", 'w') do |f|
     f.puts(ica2_cert, pki.ca_cert, pki.root_cert)
   end
-  FileUtils.cp unrelated_pki.settings[:cacrl], "#{dest_dir}/other-3-crl-chain.pem"
+
+  pki.cleanup
+  unrelated_pki.cleanup
 end
 
 regen_crl_tests_pki
