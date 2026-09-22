@@ -1,4 +1,4 @@
-(def i18n-version "1.0.5")
+(def i18n-version "1.0.6")
 
 (defproject org.openvoxproject/ssl-utils "3.7.2-SNAPSHOT"
   :url "http://www.github.com/openvoxproject/jvm-ssl-utils"
