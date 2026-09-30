@@ -18,11 +18,9 @@ jobs:
       matrix:
         fips: ['fips-disabled']
         version: ['17', '21', '25']
-        # Add additional coverage for FIPS. Only Java 17 is tested as
-        # that is the only JVM version that bc-fips 1.x is certified for.
         include:
           - fips: 'fips-enabled'
-            version: '17'
+            version: '21'
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo
