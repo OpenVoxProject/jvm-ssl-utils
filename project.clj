@@ -20,7 +20,7 @@
   :managed-dependencies [[org.clojure/clojure "1.12.6"]
                          [org.clojure/tools.logging "1.3.1"]
                          [commons-io "2.22.0"]
-                         [org.bouncycastle/bcpkix-jdk18on "1.86"]
+                         [org.bouncycastle/bcpkix-jdk18on "1.87"]
                          [org.bouncycastle/bcpkix-fips "2.1.13"]
                          [org.bouncycastle/bc-fips "2.1.3"]
                          [org.bouncycastle/bctls-fips "2.1.25"]
