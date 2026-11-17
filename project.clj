@@ -18,7 +18,7 @@
   ;; :managed-dependencies. This prevents endless version conflicts due to deps of deps.
   ;; Renovate should keep the versions largely in sync between projects.
   :managed-dependencies [[org.clojure/clojure "1.12.6"]
-                         [org.clojure/tools.logging "1.3.1"]
+                         [org.clojure/tools.logging "1.3.2"]
                          [commons-io "2.22.0"]
                          [org.bouncycastle/bcpkix-jdk18on "1.86"]
                          [org.bouncycastle/bcpkix-fips "2.1.13"]
