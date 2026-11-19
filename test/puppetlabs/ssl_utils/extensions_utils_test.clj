@@ -20,7 +20,7 @@
                     :critical true
                     :value gns}]
           opts {:extensions in-exts
-                :keylength 512}
+                :keylength 2048}
           ssl-cert (simple/gen-self-signed-cert "test" 42 opts)
           cert (simple-test/roundtrip-pem
                  ssl-utils/cert->pem! ssl-utils/pem->cert (:cert ssl-cert))
