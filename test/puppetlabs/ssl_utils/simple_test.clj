@@ -35,10 +35,10 @@
     ;; of the exception aborting the whole deftest.
     (let [long-certname testutils/long-puppet-cn
           ca-cert (is #_{:clj-kondo/ignore [:constant-condition]}
-                      (simple/gen-self-signed-cert long-certname 1 {:keylength 512} true))
+                      (simple/gen-self-signed-cert long-certname 1 {:keylength 2048} true))
           cert #_{:clj-kondo/ignore [:constant-condition]}
                (when ca-cert
-                 (is (simple/gen-cert long-certname ca-cert 2 {:keylength 512})))
+                 (is (simple/gen-cert long-certname ca-cert 2 {:keylength 2048})))
           crl #_{:clj-kondo/ignore [:constant-condition]}
               (when ca-cert
                 (is (simple/gen-crl ca-cert)))]
@@ -55,11 +55,11 @@
 (deftest optional-parameters-test
   (testing "Can specify keylength when generating a certificate"
     (let [cacert (simple/gen-self-signed-cert "CA" 0)
-          cert (simple/gen-cert "foo" cacert 1 {:keylength 512})]
+          cert (simple/gen-cert "foo" cacert 1 {:keylength 2048})]
       (is (= simple/default-keylength (ssl-utils/keylength (:public-key cacert))))
       (is (= simple/default-keylength (ssl-utils/keylength (:private-key cacert))))
-      (is (= 512 (ssl-utils/keylength (:public-key cert))))
-      (is (= 512 (ssl-utils/keylength (:private-key cert))))))
+      (is (= 2048 (ssl-utils/keylength (:public-key cert))))
+      (is (= 2048 (ssl-utils/keylength (:private-key cert))))))
   (testing "Can specify extensions when generating a certificate"
     (let [extensions [(ssl-utils/subject-dns-alt-names ["bar" "baz"] false)]
           cacert (simple/gen-self-signed-cert "CA" 0)

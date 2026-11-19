@@ -32,7 +32,7 @@
   (testing "keylength"
     (doseq [[test-str keypair expected-length]
             [["defaults to 4096" (generate-key-pair)      4096]
-             ["is configurable"  (generate-key-pair 1024) 1024]]]
+             ["is configurable"  (generate-key-pair 2048) 2048]]]
       (testing test-str
         (let [public-length  (-> keypair get-public-key keylength)
               private-length (-> keypair get-private-key keylength)]
@@ -46,7 +46,7 @@
       (is (public-key? public-key))))
 
   (testing "write public key to PEM stream"
-    (let [original-key (get-public-key (generate-key-pair 512))
+    (let [original-key (get-public-key (generate-key-pair 2048))
           parsed-key   (-> original-key
                            (write-to-pem-stream key->pem!)
                            pem->public-key)]
@@ -72,7 +72,7 @@
       (is (every? private-key? private-keys))))
 
   (testing "write private key to PEM stream"
-    (let [original-key (get-private-key (generate-key-pair 512))
+    (let [original-key (get-private-key (generate-key-pair 2048))
           parsed-key   (-> original-key
                            (write-to-pem-stream key->pem!)
                            pem->private-key)]
@@ -112,13 +112,13 @@
     (let [subject (cn "foo")
           certificate (:cert (simple/gen-self-signed-cert subject
                                                           42
-                                                          {:keylength 512}))]
+                                                          {:keylength 2048}))]
       (is (= subject (get-cn-from-x509-certificate certificate))))))
 
 (deftest subject-from-x509-certificate-test
   (testing "subject extracted from an X509Certificate"
     (let [subject "CN=myagent,OU=Users,OU=Department A,DC=mydomain,DC=com"
-          key-pair (generate-key-pair 512)
+          key-pair (generate-key-pair 2048)
           certificate (sign-certificate subject
                                         (get-private-key key-pair)
                                         42
@@ -149,13 +149,13 @@
     ;; that when it throws, the block reports a single error and the remaining
     ;; blocks still run, instead of the exception aborting the whole deftest.
     (testing "create CSR with a long CN in the subject"
-      (let [csr (is (generate-certificate-request (generate-key-pair 512) long-dn))]
+      (let [csr (is (generate-certificate-request (generate-key-pair 2048) long-dn))]
         (when csr
           (is (certificate-request? csr))
           (is (has-subject? csr long-dn)))))
 
     (testing "sign certificate with a long CN in the subject and issuer"
-      (let [key-pair (generate-key-pair 512)
+      (let [key-pair (generate-key-pair 2048)
             certificate (is (sign-certificate long-dn
                                               (get-private-key key-pair)
                                               42
@@ -171,7 +171,7 @@
           (is (= long-dn (get-subject-from-x509-certificate certificate))))))
 
     (testing "sign certificate with a long CN in the issuer DN of its authority key identifier"
-      (let [key-pair (generate-key-pair 512)
+      (let [key-pair (generate-key-pair 2048)
             extensions [(authority-key-identifier-options long-dn 42 false)]
             certificate (is (sign-certificate (cn "my ca")
                                               (get-private-key key-pair)
@@ -472,7 +472,7 @@
 
   (testing "write certificate to PEM stream"
     (let [subject     (cn "foo")
-          key-pair    (generate-key-pair 512)
+          key-pair    (generate-key-pair 2048)
           subj-pub    (get-public-key key-pair)
           issuer      (cn "my ca")
           issuer-key  (get-private-key (generate-key-pair))
@@ -516,7 +516,7 @@
              (get-extension updated-crl authority-key-identifier-oid))))))
 
 (deftest certificate-revocation-list
-  (let [key-pair (generate-key-pair 512)
+  (let [key-pair (generate-key-pair 2048)
         public-key (get-public-key key-pair)
         private-key (get-private-key key-pair)
         issuer-name (cn "Puppet CA: localhost")
@@ -868,7 +868,7 @@
       (is (thrown? IllegalArgumentException
                    (generate-ssl-context (dissoc ssl-opts :ssl-context :ssl-ca-cert)))))))
 
-(let [keypair (generate-key-pair 512)
+(let [keypair (generate-key-pair 2048)
       public (get-public-key keypair)
       private (get-private-key keypair)]
 
@@ -897,13 +897,13 @@
 (deftest key-tests
   (let [subject  (cn "subject")
         issuer   (cn "issuer")
-        key-pair (generate-key-pair 512)
+        key-pair (generate-key-pair 2048)
         csr      (generate-certificate-request key-pair subject)
-        cert     (sign-certificate issuer (get-private-key (generate-key-pair 512))
+        cert     (sign-certificate issuer (get-private-key (generate-key-pair 2048))
                                    42 (generate-not-before-date)
                                    (generate-not-after-date) subject
-                                   (get-public-key (generate-key-pair 512)))
-        crl-kp   (generate-key-pair 512)
+                                   (get-public-key (generate-key-pair 2048)))
+        crl-kp   (generate-key-pair 2048)
         crl      (generate-crl (X500Principal. issuer)
                                (get-private-key crl-kp)
                                (get-public-key crl-kp))
@@ -1069,7 +1069,7 @@
 
 (deftest csr-attributes-test
   (testing "one attribute"
-    (let [csr (generate-certificate-request (generate-key-pair 512)
+    (let [csr (generate-certificate-request (generate-key-pair 2048)
                                             (cn "subject")
                                             []
                                             [{:oid "1.3.6.1.4.1.34380.1.3.2" :value true}])]
@@ -1089,7 +1089,7 @@
           (is (= [{:oid  "1.3.6.1.4.1.34380.1.3.2" :values ["true"]}]
                  attributes))))))
   (testing "more than one attribute"
-    (let [csr (generate-certificate-request (generate-key-pair 512)
+    (let [csr (generate-certificate-request (generate-key-pair 2048)
                                             (cn "subject")
                                             []
                                             [{:oid "1.3.6.1.4.1.34380.1.3.2" :value true}
@@ -1104,7 +1104,7 @@
                    {:oid "1.3.6.1.4.1.34380.1.3.3" :values #{"one" "two"}}}
                  (set (map convert-value-to-set attributes))))))))
   (testing "multiples with extensions too"
-    (let [csr (generate-certificate-request (generate-key-pair 512)
+    (let [csr (generate-certificate-request (generate-key-pair 2048)
                                             (cn "subject")
                                             [(subject-dns-alt-names ["moe" "curly" "larry"] false)]
                                             [{:oid "1.3.6.1.4.1.34380.1.3.2" :value true}
@@ -1150,17 +1150,17 @@
 (deftest subject-dns-alt-names-test
   (testing "certificate"
     (let [cert (sign-certificate (cn "ca")
-                                 (get-private-key (generate-key-pair 512))
+                                 (get-private-key (generate-key-pair 2048))
                                  1234
                                  (generate-not-before-date)
                                  (generate-not-after-date)
                                  (cn "subject")
-                                 (get-public-key (generate-key-pair 512))
+                                 (get-public-key (generate-key-pair 2048))
                                  [(subject-dns-alt-names ["peter" "paul" "mary"] false)])]
       (is (= #{"peter" "paul" "mary"} (set (get-subject-dns-alt-names cert))))))
 
   (testing "CSR"
-    (let [csr (generate-certificate-request (generate-key-pair 512)
+    (let [csr (generate-certificate-request (generate-key-pair 2048)
                                             (cn "subject")
                                             [(subject-dns-alt-names ["moe" "curly" "larry"] false)])]
       (is (= #{"moe" "curly" "larry"} (set (get-subject-dns-alt-names csr)))))))
@@ -1168,17 +1168,17 @@
 (deftest subject-ip-alt-names-test
   (testing "certificate"
     (let [cert (sign-certificate (cn "ca")
-                                 (get-private-key (generate-key-pair 512))
+                                 (get-private-key (generate-key-pair 2048))
                                  1234
                                  (generate-not-before-date)
                                  (generate-not-after-date)
                                  (cn "subject")
-                                 (get-public-key (generate-key-pair 512))
+                                 (get-public-key (generate-key-pair 2048))
                                  [(subject-alt-names {:dns-name ["moe"] :ip ["192.168.69.90" "192.168.69.91" "192.168.69.92"]} false)])]
       (is (= #{"192.168.69.90" "192.168.69.91" "192.168.69.92"} (set (get-subject-ip-alt-names cert))))))
 
   (testing "CSR"
-    (let [csr (generate-certificate-request (generate-key-pair 512)
+    (let [csr (generate-certificate-request (generate-key-pair 2048)
                                             (cn "subject")
                                             [(subject-alt-names {:dns-name ["moe"] :ip ["192.168.69.90" "192.168.69.91" "192.168.69.92"]} false)])]
       (is (= #{"192.168.69.90" "192.168.69.91" "192.168.69.92"} (set (get-subject-ip-alt-names csr)))))))
