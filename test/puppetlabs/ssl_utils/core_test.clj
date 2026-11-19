@@ -8,7 +8,7 @@
   (:import (clojure.lang ExceptionInfo)
            (com.puppetlabs.ssl_utils SSLUtils)
            (java.io ByteArrayOutputStream StringReader)
-           (java.security KeyStore)
+           (java.security KeyPair KeyStore)
            (java.security.cert CertPathValidatorException)
            java.util.Arrays
            (javax.net.ssl SSLContext)
@@ -1129,8 +1129,12 @@
   (is (signature-valid?
         (pem->csr (open-ssl-file "certification_requests/ca_test_client_with_exts.pem"))))
 
-  (is (not (signature-valid?
-            (pem->csr (open-ssl-file "certification_requests/bad_public_key.pem"))))))
+  (testing "a CSR whose public key does not belong to the signing key"
+    (let [signing-key (get-private-key (generate-key-pair 2048))
+          other-public-key (get-public-key (generate-key-pair 2048))
+          csr (generate-certificate-request (KeyPair. other-public-key signing-key)
+                                            (cn "luke.madstop.com"))]
+      (is (not (signature-valid? csr))))))
 
 (deftest fingerprint-test
   (testing "certificate"
